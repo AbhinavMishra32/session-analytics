@@ -3,7 +3,12 @@ import { events } from "./db.js";
 
 export const sessionsRoutes = new Hono();
 
-sessionsRoutes.get("/", async (c) => {
+sessionsRoutes.get("/sites", async (c) => {
+  const sites = await events.distinct("site");
+  return c.json(sites.sort());
+});
+
+sessionsRoutes.get("/sessions", async (c) => {
   const site = c.req.query("site");
   const filter = site ? { site } : {};
 
@@ -29,7 +34,7 @@ sessionsRoutes.get("/", async (c) => {
   return c.json(sessions);
 });
 
-sessionsRoutes.get("/:id/events", async (c) => {
+sessionsRoutes.get("/sessions/:id/events", async (c) => {
   const list = await events
     .find({ session_id: c.req.param("id") })
     .sort({ ts: 1 })

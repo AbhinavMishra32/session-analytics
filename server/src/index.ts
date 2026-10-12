@@ -23,7 +23,7 @@ app.get("/tracker.js", async (c) => {
 app.get("/health", (c) => c.text("ok"));
 
 app.route("/api/events", eventsRoutes);
-app.route("/api/sessions", sessionsRoutes);
+app.route("/api", sessionsRoutes);
 app.route("/api", heatmapRoutes);
 
 await connectDb();
