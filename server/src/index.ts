@@ -5,6 +5,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { connectDb } from "./db.js";
 import { eventsRoutes } from "./events.js";
+import { sessionsRoutes } from "./sessions.js";
 
 const app = new Hono();
 
@@ -21,6 +22,7 @@ app.get("/tracker.js", async (c) => {
 app.get("/health", (c) => c.text("ok"));
 
 app.route("/api/events", eventsRoutes);
+app.route("/api/sessions", sessionsRoutes);
 
 await connectDb();
 
