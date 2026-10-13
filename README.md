@@ -1,7 +1,8 @@
 # session-analytics
 
-A small session + click analytics tool: a tracking script, an API that stores events in MongoDB, and a dashboard with session journeys and click heatmaps.
+A small session + click analytics tool: a tracking script, an API that stores events in MongoDB, and a dashboard with session journeys, click heatmaps and funnels.
 
+**Demo video (75s):** https://session-analytics-dashboard-azure.vercel.app/demo
 **Live dashboard:** https://session-analytics-dashboard-azure.vercel.app
 **API:** https://session-analytics-api-lemon.vercel.app
 
@@ -11,9 +12,8 @@ I've used Amplitude and Google Analytics before, but I wanted to see what buildi
 
 - [tryspar.dev](https://tryspar.dev) - Spar, a coding practice app I'm building
 - [abhinavmishra.in](https://abhinavmishra.in) - my portfolio
-- [tryconstruct.cc](https://tryconstruct.cc) - Construct, a learning IDE
 
-So the dashboard shows real visitors, not seeded rows. Building for real sites shaped the design more than the spec did. All three are Next.js apps where navigation never reloads the page, so SPA route changes had to be caught. Visitors arrive on phones and wide monitors, so raw click pixels were useless until they were split by device. And the last click before someone leaves is often the interesting one, so it can't get lost when the tab closes. Seeing my own landing pages through a heatmap has honestly been the most fun part of this.
+So the dashboard shows real visitors, not seeded rows. Building for real sites shaped the design more than the spec did. Both are Next.js apps where navigation never reloads the page, so SPA route changes had to be caught. Visitors arrive on phones and wide monitors, so raw click pixels were useless until they were split by device. And the last click before someone leaves is often the interesting one, so it can't get lost when the tab closes. Seeing my own landing pages through a heatmap has honestly been the most fun part of this. Within an hour of going live it caught a real visitor rage-clicking the hero buttons on tryspar.dev, four rage clicks in under ten seconds. That's exactly the kind of thing I built it to find.
 
 One script tag adds a site:
 
@@ -92,6 +92,15 @@ With everything in the brief working and deployed, I was ready to submit. But a 
 Pick a site, list the steps as paths (`/, /pricing, /download`), and the dashboard shows how many sessions reached each step and how many dropped off between steps. A step only counts if the visitor reached it **after** the previous one, so `/pricing → /` isn't the same funnel as `/ → /pricing`.
 
 It runs on the same `events` collection, so the tracker didn't change. MongoDB groups each session's page views in time order, then a short loop walks every session through the steps. This is the view I actually wanted for my own landing pages.
+
+## Assumptions
+
+- **One browser = one visitor.** The session id lives in localStorage, so a different browser, device or cleared storage counts as a new visitor. There's no cross-device identity.
+- **Client time orders a session.** Events are sorted by the browser's `ts`. The server also stores `received_at`, so a badly skewed client clock can be spotted.
+- **A page is origin + path.** Query strings and hashes are ignored, so `/pricing?utm=x` and `/pricing` are one page.
+- **Layouts are stable within a device bucket.** Heatmaps assume a page looks the same at, say, 1300px and 1440px wide, and that the page hasn't changed much since the clicks happened (the screenshot is of the page as it is now).
+- **The dashboard is for the site owner.** It has no login. Anyone with the URL can read it, which is fine for a demo but not for real customer data.
+- **Pages are public.** Screenshot mode needs to load the page from outside, so it doesn't work for pages behind a login.
 
 ## Decisions and trade-offs
 
