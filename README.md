@@ -71,6 +71,8 @@ dashboard/                 Next.js dashboard
 | GET    | `/api/sessions/:id/events`   | one session's events in order |
 | GET    | `/api/pages`                 | pages that have clicks, most clicked first |
 | GET    | `/api/heatmap?url=&device=`  | clicks for a page, filtered by device width |
+| GET    | `/api/paths?site=`           | a site's pages with view counts |
+| GET    | `/api/funnel?site=&steps=`   | sessions reaching each step, in order |
 
 ## Data model
 
@@ -83,6 +85,14 @@ click only: x, y (document coords), vw (viewport width), dw, dh (document size),
 
 Indexes: `{session_id, ts}` for journeys, `{page_url, type}` for heatmaps.
 
+## Going further: funnels
+
+With everything in the brief working and deployed, I was ready to submit. But a list of sessions and a heatmap still don't answer the question a product owner actually has: **where am I losing people?** So I pushed one step further and added funnels.
+
+Pick a site, list the steps as paths (`/, /pricing, /download`), and the dashboard shows how many sessions reached each step and how many dropped off between steps. A step only counts if the visitor reached it **after** the previous one, so `/pricing → /` isn't the same funnel as `/ → /pricing`.
+
+It runs on the same `events` collection, so the tracker didn't change. MongoDB groups each session's page views in time order, then a short loop walks every session through the steps. This is the view I actually wanted for my own landing pages.
+
 ## Decisions and trade-offs
 
 - **Document coordinates, split by device width.** Clicks store `pageX/pageY` plus viewport and document width. A click at 390px wide and one at 1440px wide aren't comparable, so the heatmap buckets by device (mobile < 768, tablet < 1280, desktop) and rescales x by `renderWidth / dw`.
@@ -92,6 +102,7 @@ Indexes: `{session_id, ts}` for journeys, `{page_url, type}` for heatmaps.
 - **One events collection, sessions computed with an aggregation** instead of a separate sessions collection. It's simpler, and nothing has to be kept in sync. At high volume I'd pre-aggregate sessions on write.
 - **Rage clicks detected client side** (3+ clicks within 600ms and 30px). That's where the timing data is. The cost is that the flag is trusted from the client.
 - **Heatmap has two modes.** *Live* loads the real page in an iframe, which is current but fails on sites that block framing. *Screenshot* uses Microlink to capture the page at the device width, which works everywhere but is static, and the free tier allows about 50 captures a day.
+- **Funnels computed at read time.** Mongo groups page views per session and the step matching happens in a small loop in the API. That's simple and fast at this size. With millions of sessions I'd do the step matching inside the aggregation, or precompute per-session paths.
 - **The ingest endpoint is public**, so every batch is validated with Zod (shape, URL protocol, max 100 events) and unknown fields are dropped.
 
 ## Out of scope
