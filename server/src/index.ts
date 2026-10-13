@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { connectDb } from "./db.js";
 import { eventsRoutes } from "./events.js";
+import { funnelRoutes } from "./funnels.js";
 import { heatmapRoutes } from "./heatmap.js";
 import { sessionsRoutes } from "./sessions.js";
 
@@ -20,6 +21,7 @@ app.get("/health", (c) => c.text("ok"));
 app.route("/api/events", eventsRoutes);
 app.route("/api", sessionsRoutes);
 app.route("/api", heatmapRoutes);
+app.route("/api", funnelRoutes);
 
 // vercel runs this export directly. locally, dev.ts starts it with node
 export default app;
