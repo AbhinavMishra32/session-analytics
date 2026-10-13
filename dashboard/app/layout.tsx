@@ -23,6 +23,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <Link href="/heatmap" className="text-neutral-600 hover:text-neutral-900">
               Heatmap
             </Link>
+            <Link href="/funnels" className="text-neutral-600 hover:text-neutral-900">
+              Funnels
+            </Link>
           </nav>
         </header>
         <main className="mx-auto max-w-6xl px-4 py-8">{children}</main>

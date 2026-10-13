@@ -52,3 +52,17 @@ export function getPages() {
 export function getClicks(url: string, device: Device) {
   return get<Click[]>(`/api/heatmap?url=${encodeURIComponent(url)}&device=${device}`);
 }
+
+export type PathCount = { path: string; views: number };
+
+export type FunnelStep = { path: string; sessions: number };
+
+export function getPaths(site: string) {
+  return get<PathCount[]>(`/api/paths?site=${encodeURIComponent(site)}`);
+}
+
+export function getFunnel(site: string, steps: string[]) {
+  return get<FunnelStep[]>(
+    `/api/funnel?site=${encodeURIComponent(site)}&steps=${encodeURIComponent(steps.join(","))}`,
+  );
+}

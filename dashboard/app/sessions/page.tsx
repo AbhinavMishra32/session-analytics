@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { getSessions, getSites } from "@/lib/api";
 import { duration, path } from "@/lib/format";
+import { SiteLink } from "../site-link";
 import { Time } from "../time";
 
 export default function SessionsPage({ searchParams }: PageProps<"/sessions">) {
@@ -66,18 +67,5 @@ async function SessionsTable({ searchParams }: Pick<PageProps<"/sessions">, "sea
         </div>
       )}
     </>
-  );
-}
-
-function SiteLink({ label, href, active }: { label: string; href: string; active: boolean }) {
-  return (
-    <Link
-      href={href}
-      className={`rounded-full border px-3 py-1 ${
-        active ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-300 bg-white hover:border-neutral-500"
-      }`}
-    >
-      {label}
-    </Link>
   );
 }
