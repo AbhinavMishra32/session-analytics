@@ -19,7 +19,18 @@ const client = new MongoClient(process.env.MONGODB_URI ?? "mongodb://localhost:2
 
 export const events = client.db("analytics").collection<Event>("events");
 
-export async function connectDb() {
+let ready: Promise<void> | null = null;
+
+// runs once per process. on vercel that's once per cold start, not per request
+export function connectDb() {
+  ready ??= setup().catch((err) => {
+    ready = null; // let the next request retry
+    throw err;
+  });
+  return ready;
+}
+
+async function setup() {
   await client.connect();
 
   // session journey: all events of a session in order

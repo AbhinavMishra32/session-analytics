@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx watch --env-file-if-exists=.env.local src/index.ts",
+    "dev": "tsx watch --env-file-if-exists=.env.local src/dev.ts",
     "build": "tsc",
-    "start": "node --env-file-if-exists=.env.local dist/index.js"
+    "start": "node --env-file-if-exists=.env.local dist/dev.js"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.4",
@@ -16,6 +16,6 @@
   "devDependencies": {
     "@types/node": "^26.6.5",
     "tsx": "^4.23.15",
-    "typescript": "^7.0.2"
+    "typescript": "^5.9.3"
   }
 }
