@@ -2,6 +2,8 @@
 
 A small session + click analytics tool: a tracking script, an API that stores events in MongoDB, and a dashboard with session journeys, click heatmaps and funnels.
 
+[![Demo video](dashboard/public/demo-poster.jpg)](https://session-analytics-dashboard-azure.vercel.app/demo)
+
 **Demo video (75s):** https://session-analytics-dashboard-azure.vercel.app/demo
 **Live dashboard:** https://session-analytics-dashboard-azure.vercel.app
 **API:** https://session-analytics-api-lemon.vercel.app
