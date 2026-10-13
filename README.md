@@ -6,6 +6,24 @@ A small session + click analytics tool: a tracking script, an API that stores ev
 **Live dashboard:** https://session-analytics-dashboard-azure.vercel.app
 **API:** https://session-analytics-api-lemon.vercel.app
 
+## How I built this: me + AI
+
+I built this with Claude (Opus 5.5) as a pair programmer, which is how I build software day to day now. I'm saying it up front because hiding it would be the wrong signal. AI makes writing code cheap. What it doesn't do is decide what's worth building, catch what's wrong, or own the result. That part is still the engineer's job, and it's the part I care about showing here.
+
+**What I owned**
+- **Product direction.** Running it on my own products instead of a demo page, keeping both heatmap modes, rage-click detection, and pushing past the brief with funnels.
+- **The decisions.** The stack (Hono, a dependency-free tracker, one MongoDB events collection), what's in scope and what's deliberately out, and where it's hosted.
+- **Understanding and review.** I went through the code piece by piece and made it explain itself. Where something was clever but hard to follow, I had it rewritten plainly (the tracker's SPA navigation hook is one example). I can walk through every line and why it's there.
+
+**What the AI did**
+- Proposed options and trade-offs for me to choose from.
+- Wrote most of the code once the decisions were made: the boilerplate, the endpoints, the dashboard UI, the deploy setup, and the demo video.
+
+**Why I work this way**
+I'm building a personal AI project right now (not announced yet), and I'm building it the same way. I make decisions closely together with the AI and read every line, instead of handing the whole thing to an agent and accepting what comes back. The reason is practical: an AI doesn't keep the big picture. It forgets between threads, and in long sessions it loses detail as older context gets compressed. If I understand the architecture myself, the project stays coherent no matter which session I'm in or what the AI remembers. The AI speeds up the typing. The understanding has to live with me.
+
+Every feature was tested end to end on real traffic before it shipped, not just generated and committed.
+
 ## It's running on my real products
 
 I've used Amplitude and Google Analytics before, but I wanted to see what building the core of one actually takes. So instead of only testing against a demo page, I put the tracker on my own sites:
